@@ -1,3 +1,12 @@
+openapi: "3.1.0"
+info:
+  title: SAM.gov API
+  description: API para buscar oportunidades de contrato en SAM.gov.
+  version: "1.0.0"
+  license:
+    name: MIT
+servers:
+  - url: https://api.sam.gov/prod/opportunities/v2
 paths:
   /search:
     get:
@@ -34,4 +43,75 @@ paths:
             default: 10
             minimum: 1
             maximum: 1000
-          description: Límite de resultados.
+          description: Límite de resultados a devolver.
+      responses:
+        "200":
+          description: Respuesta exitosa con los datos de las oportunidades.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalRecords:
+                    type: integer
+                    description: Número total de registros encontrados.
+                  limit:
+                    type: integer
+                    description: Número de registros devueltos.
+                  opportunitiesData:
+                    type: array
+                    description: Lista de oportunidades encontradas.
+                    items:
+                      type: object
+                      properties:
+                        noticeId:
+                          type: string
+                          description: Identificador único de la oportunidad.
+                        title:
+                          type: string
+                          description: Título de la oportunidad.
+                        postedDate:
+                          type: string
+                          format: date
+                          description: Fecha de publicación.
+                        uiLink:
+                          type: string
+                          format: uri
+                          description: Enlace a la oportunidad en SAM.gov.
+        "400":
+          description: Solicitud incorrecta. Parámetros inválidos.
+        "401":
+          description: Autenticación fallida. Revisa tu clave API.
+        "500":
+          description: Error interno en el servidor.
+components:
+  schemas:
+    OpportunitiesResponse:
+      type: object
+      properties:
+        totalRecords:
+          type: integer
+        limit:
+          type: integer
+        opportunitiesData:
+          type: array
+          items:
+            type: object
+            properties:
+              noticeId:
+                type: string
+              title:
+                type: string
+              postedDate:
+                type: string
+                format: date
+              uiLink:
+                type: string
+                format: uri
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
